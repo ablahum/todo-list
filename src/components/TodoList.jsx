@@ -24,21 +24,18 @@ const Button = ({ type, todo, handler }) => {
 
 const TodoList = ({ todos, setTodos, setEditTodo }) => {
   const handleComplete = (todo) => {
-    const check = todos.map((item) => {
-      if (item.id === todo.id) return { ...item, completed: !item.completed }
-
-      return item
+    const completed = todos.map((item) => {
+      if (item.id === todo.id) {
+        return {
+          ...item,
+          completed: !item.completed,
+        }
+      } else {
+        return item
+      }
     })
 
-    setTodos(
-      todos.map((item) => {
-        if (item.id === todo.id) {
-          return { ...item, completed: !item.completed }
-        }
-
-        return item
-      })
-    )
+    setTodos(completed)
   }
 
   const handleEdit = ({ id }) => {
@@ -48,16 +45,16 @@ const TodoList = ({ todos, setTodos, setEditTodo }) => {
   }
 
   const handleDelete = ({ id }) => {
-    const filteredTodo = todos.filter((todo) => todo.id !== id)
+    const filtered = todos.filter((todo) => todo.id !== id)
 
-    setTodos(filteredTodo)
+    setTodos(filtered)
   }
 
   return (
     <>
       {todos.map((todo) => (
         <li className='list-item' key={todo.id}>
-          <input type='text' value={todo.title} className={` list ${todo.completed ? 'complete' : ''}`} onChange={(e) => e.preventDefault()} />
+          <p className={` list ${todo.completed ? 'completed' : ''}`}>{todo.title}</p>
 
           <Button type='complete' todo={todo} handler={handleComplete} />
 
