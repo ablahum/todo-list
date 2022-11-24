@@ -1,5 +1,35 @@
+const Button = ({ type, todo, handler }) => {
+  const icon = (type) => {
+    switch (type) {
+      case 'complete':
+        return <i className='fa fa-check-circle'></i>
+
+      case 'edit':
+        return <i className='fa fa-edit'></i>
+
+      case 'delete':
+        return <i className='fa fa-trash'></i>
+
+      default:
+        return null
+    }
+  }
+
+  return (
+    <button className={`task-button button-${type}`} onClick={() => handler(todo)}>
+      {icon(type)}
+    </button>
+  )
+}
+
 const TodoList = ({ todos, setTodos, setEditTodo }) => {
   const handleComplete = (todo) => {
+    const check = todos.map((item) => {
+      if (item.id === todo.id) return { ...item, completed: !item.completed }
+
+      return item
+    })
+
     setTodos(
       todos.map((item) => {
         if (item.id === todo.id) {
@@ -12,13 +42,15 @@ const TodoList = ({ todos, setTodos, setEditTodo }) => {
   }
 
   const handleEdit = ({ id }) => {
-    const findTodo = todos.find((todo) => todo.id === id)
+    const todo = todos.find((todo) => todo.id === id)
 
-    setEditTodo(findTodo)
+    setEditTodo(todo)
   }
 
   const handleDelete = ({ id }) => {
-    setTodos(todos.filter((todo) => todo.id !== id))
+    const filteredTodo = todos.filter((todo) => todo.id !== id)
+
+    setTodos(filteredTodo)
   }
 
   return (
@@ -27,17 +59,11 @@ const TodoList = ({ todos, setTodos, setEditTodo }) => {
         <li className='list-item' key={todo.id}>
           <input type='text' value={todo.title} className={` list ${todo.completed ? 'complete' : ''}`} onChange={(e) => e.preventDefault()} />
 
-          <button className='button-complete task-button' onClick={() => handleComplete(todo)}>
-            <i className='fa fa-check-circle'></i>
-          </button>
+          <Button type='complete' todo={todo} handler={handleComplete} />
 
-          <button className='button-edit task-button' onClick={() => handleEdit(todo)}>
-            <i className='fa fa-edit'></i>
-          </button>
+          <Button type='edit' todo={todo} handler={handleEdit} />
 
-          <button className='button-delete task-button' onClick={() => handleDelete(todo)}>
-            <i className='fa fa-trash'></i>
-          </button>
+          <Button type='delete' todo={todo} handler={handleDelete} />
         </li>
       ))}
     </>
